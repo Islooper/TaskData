@@ -6,13 +6,6 @@ import (
 	"TaskData/write"
 )
 
-type DataSync struct {
-	R chan string
-	W chan string
-	read.Reader
-	write.Writer
-}
-
 // 初始化读的数据库
 func initRead() *read.ReadFromGms {
 	readMysql := dao.MysqlConfig{
