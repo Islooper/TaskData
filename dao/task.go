@@ -99,7 +99,7 @@ type Task struct {
 	Status       int64  `gorm:"type:int(4);comment:'任务状态'"`
 	StartTime    int64  `gorm:"type:int(11);"`
 	EndTime      int64  `gorm:"type:int(11);"`
-	Type         int    `gorm:"type:int(4);comment:'任务类型 1-筛查 2-复查 3-普查'"`
+	Type         int64  `gorm:"type:int(4);comment:'任务类型 1-筛查 2-复查 3-普查'"`
 	Device       int64  `gorm:"type:int(4);comment:'1 - 视力 1- 验光 3- 全部'"`
 	Name         string `gorm:"type:varchar(255);"`
 	DoneTime     int64  `gorm:"type:int(11);"`
