@@ -1,6 +1,8 @@
 package dao
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type TaskDo struct {
 	TaskId     string
@@ -36,6 +38,7 @@ func ReadTasks(db *gorm.DB) []*TaskDo {
 ///////////////////////////////
 type VisionDo struct {
 	TaskId             string
+	StudentId          string
 	Idcard             string
 	LeftVision         string
 	RightVision        string
@@ -62,9 +65,41 @@ func ReadVisions(db *gorm.DB) []*VisionDo {
 	return visionDos
 }
 
+type StudentDo struct {
+	StudentId      string
+	IdCard         string
+	StudentNum     string
+	Birthday       string
+	Name           string
+	Gender         string
+	ClassId        string
+	Nation         string
+	OrgId          string
+	FaceUrl        string
+	EnrollmentYear int64
+	StartDate      int64
+	LastDate       int64
+	Spell          string
+	ParentsPhone   string
+}
+
+func ReadStuId(idCard string, db *gorm.DB) *StudentDo {
+	stu := new(StudentDo)
+	err := db.Where("id_card = ?", idCard).First(stu).Error
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return nil
+		} else {
+			return nil
+		}
+	}
+	return stu
+}
+
 ///////////////////////////////////////
 type OptometryDo struct {
 	TaskId     string
+	StudentId  string
 	Idcard     string
 	LeftSph    string
 	RightSph   string
