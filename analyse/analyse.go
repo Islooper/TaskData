@@ -24,6 +24,7 @@ func (d *DataSync) Analyse() {
 	// 获取任务数据
 	taskDos := <-d.TaskRc
 	newTaskDos := analyseTask(taskDos)
+
 	d.TaskWc <- newTaskDos
 
 	// 获取视力数据

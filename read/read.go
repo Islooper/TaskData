@@ -9,7 +9,7 @@ import (
 )
 
 type Reader interface {
-	Read(rc chan string)
+	Read(taskRc chan []*dao.TaskDo, visionRc chan []*dao.VisionDo, opRc chan []*dao.OptometryDo, wg *sync.WaitGroup)
 }
 
 type ReadFromGms struct {

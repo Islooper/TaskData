@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"github.com/jinzhu/gorm"
 )
 
@@ -23,6 +24,7 @@ type TaskDo struct {
 	Creator    string // 任务创建者
 }
 
+// TODO
 func ReadTasks(db *gorm.DB) []*TaskDo {
 	taskDos := make([]*TaskDo, 0)
 
@@ -160,6 +162,19 @@ type ExecutorDo struct {
 	DeletedAt int
 }
 
+// 新增
+func Create(task []*Task, db *gorm.DB) error {
+	if nil == task {
+		return errors.New("task is nil")
+	}
+
+	err := db.Create(task).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 ////////////////////////new Task data
 type TaskData struct {
 	ID        uint `gorm:"primary_key"`
@@ -189,4 +204,53 @@ type TaskData struct {
 	ViUpTime           int64  `gorm:"type:int(11);not null;default:0;comment:'视力数据更新时间'"` // vi更新时间
 
 	Memo string `gorm:"type:varchar(255);not null;default:'';comment:'备注，描述'"`
+}
+
+func UpdateTaskData(taskDataDo *TaskData, db *gorm.DB) error {
+	updateTaskData := make(map[string]interface{})
+	updateTaskData["CreatedAt"] = taskDataDo.CreatedAt
+	updateTaskData["UpdatedAt"] = taskDataDo.UpdatedAt
+	updateTaskData["TaskId"] = taskDataDo.TaskId
+	updateTaskData["StudentId"] = taskDataDo.StudentId
+	updateTaskData["IdCard"] = taskDataDo.IdCard
+	updateTaskData["ClassId"] = taskDataDo.ClassId
+	updateTaskData["OrgId"] = taskDataDo.OrgId
+	updateTaskData["LeftSph"] = taskDataDo.LeftSph
+	updateTaskData["RightSph"] = taskDataDo.RightSph
+	updateTaskData["LeftAp"] = taskDataDo.LeftAp
+	updateTaskData["RightAp"] = taskDataDo.RightAp
+	updateTaskData["LeftAxial"] = taskDataDo.LeftAxial
+	updateTaskData["RightAxial"] = taskDataDo.RightAxial
+	updateTaskData["ImgUrl"] = taskDataDo.ImgUrl
+	updateTaskData["OpUpTime"] = taskDataDo.OpUpTime
+	updateTaskData["LeftVision"] = taskDataDo.LeftVision
+	updateTaskData["RightVision"] = taskDataDo.RightVision
+	updateTaskData["IsGlasses"] = taskDataDo.IsGlasses
+	updateTaskData["GlassesType"] = taskDataDo.GlassesType
+	updateTaskData["LeftGlassesVision"] = taskDataDo.LeftGlassesVision
+	updateTaskData["RightGlassesVision"] = taskDataDo.RightGlassesVision
+	updateTaskData["ViUpTime"] = taskDataDo.ViUpTime
+	updateTaskData["Memo"] = taskDataDo.Memo
+
+	result := db.Model(&taskDataDo).Where("task_id = ? AND student_id = ? ", taskDataDo.TaskId, taskDataDo.StudentId).Updates(updateTaskData).Error
+	return result
+}
+
+func CreateTaskData(taskDataDos *TaskData, db *gorm.DB) error {
+	return db.Create(taskDataDos).Error
+}
+
+func ReadTaskDataByTaskIdAndStudentId(taskId, studentId string, db *gorm.DB) (*TaskData, error) {
+	if taskId == "" || studentId == "" {
+		return nil, errors.New("error param")
+	}
+
+	taskDo := new(TaskData)
+	err := db.Model(&TaskData{}).Where("task_id = ? AND student_id = ?", taskId, studentId).Find(taskDo).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return taskDo, nil
 }
