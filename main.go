@@ -1,9 +1,11 @@
 package main
 
 import (
+	"TaskData/analyse"
 	"TaskData/dao"
 	"TaskData/read"
 	"TaskData/write"
+	"sync"
 )
 
 // 初始化读的数据库
@@ -51,8 +53,27 @@ func initWrite() *write.WriteToTaskService {
 }
 func main() {
 	// 初始化读
-	_ = initRead()
+	readFromGms := initRead()
 
-	_ = initWrite()
+	WriteToTaskService := initWrite()
+
+	dataSync := &analyse.DataSync{
+		TaskRc:     make(chan []*dao.TaskDo),
+		VisionRc:   make(chan []*dao.VisionDo),
+		OpRc:       make(chan []*dao.OptometryDo),
+		TaskWc:     make(chan []*dao.Task),
+		TaskDataWc: make(chan []*dao.TaskData),
+		Reader:     readFromGms,
+		Writer:     WriteToTaskService,
+		Wg:         &sync.WaitGroup{},
+	}
+
+	// 开启读写
+	go dataSync.Read(dataSync.TaskRc, dataSync.VisionRc, dataSync.OpRc, dataSync.Wg)
+
+	go dataSync.Write(dataSync.TaskWc, dataSync.TaskDataWc, dataSync.Wg)
+
+	// 等待
+	dataSync.Wg.Wait()
 
 }

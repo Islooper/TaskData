@@ -17,7 +17,7 @@ type DataSync struct {
 	TaskDataWc chan []*dao.TaskData
 	read.Reader
 	write.Writer
-	wg *sync.WaitGroup
+	Wg *sync.WaitGroup
 }
 
 func (d *DataSync) Analyse() {
