@@ -28,7 +28,7 @@ type TaskDo struct {
 func ReadTasks(db *gorm.DB) []*TaskDo {
 	taskDos := make([]*TaskDo, 0)
 
-	err := db.Limit(10).Find(&taskDos).Error
+	err := db.Find(&taskDos).Error
 
 	if err != nil {
 		panic("read task fail")
@@ -58,7 +58,7 @@ type VisionDo struct {
 func ReadVisions(db *gorm.DB) []*VisionDo {
 	visionDos := make([]*VisionDo, 0)
 
-	err := db.Limit(10).Find(&visionDos).Error
+	err := db.Find(&visionDos).Error
 
 	if err != nil {
 		panic("read vision fail")
@@ -120,7 +120,7 @@ type OptometryDo struct {
 func ReadOps(db *gorm.DB) []*OptometryDo {
 	OpDos := make([]*OptometryDo, 0)
 
-	err := db.Limit(10).Find(&OpDos).Error
+	err := db.Find(&OpDos).Error
 
 	if err != nil {
 		panic("read op fail")

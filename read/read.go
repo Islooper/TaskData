@@ -33,11 +33,11 @@ func (r *ReadFromGms) InitReadDb() {
 
 func (r *ReadFromGms) Read(taskRc chan []*dao.TaskDo, visionRc chan []*dao.VisionDo, opRc chan []*dao.OptometryDo, wg *sync.WaitGroup) {
 	for {
-		// 每次读取10条task信息
+		// 全部读完
 		taskDos := dao.ReadTasks(r.Db)
 		if len(taskDos) == 0 {
 			// 读完了
-			close(taskRc)
+
 		} else {
 			// 数据发给分析模块进行转换或者处理
 			taskRc <- taskDos
@@ -45,11 +45,10 @@ func (r *ReadFromGms) Read(taskRc chan []*dao.TaskDo, visionRc chan []*dao.Visio
 			wg.Add(1)
 		}
 
-		// 每次读取10条视力数据
 		visionDos := dao.ReadVisions(r.Db)
 		if len(visionDos) == 0 {
 			// 读完了
-			close(visionRc)
+
 		} else {
 			// 数据发给分析模块进行转换或者处理
 			// 查找学生id
@@ -68,7 +67,7 @@ func (r *ReadFromGms) Read(taskRc chan []*dao.TaskDo, visionRc chan []*dao.Visio
 		opDos := dao.ReadOps(r.Db)
 		if len(opDos) == 0 {
 			// 读完了
-			close(opRc)
+
 		} else {
 			// 数据发给分析模块进行转换或者处理
 			// 查找学生id
